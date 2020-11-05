@@ -79,12 +79,8 @@ public class Libreoffice {
     }
 
     public static void main(String[] args) {
-        for(String v : args) {
-            System.out.println(v);
-        }
-
         if(args.length < 6) {
-            System.out.println("program [boook] [category] [chapter] [person] [content] [path]");
+            System.out.println("program [book] [category] [chapter] [person] [content] [path]");
             return;
         }
 
