@@ -54,7 +54,7 @@ public class Libreoffice {
             PropertyValue[] values = new PropertyValue[1];
             values[0] = new PropertyValue();
             values[0].Name = "Hidden";
-            values[0].Value = false;
+            values[0].Value = true;
             __component = loader.loadComponentFromURL(__url, "_blank", 0, values);
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,6 +100,8 @@ public class Libreoffice {
         object.add("ParaAdjust", new JsonPrimitive("center"));
         object.add("TextVerticalAdjust", new JsonPrimitive("center"));
 
+        args[4] = args[4].replaceAll("\\\\n", "\n");
+
         draw.add(0, 0, 0, 1200, 630, args[4], object);
 
         object.add("CharFontName", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
@@ -112,7 +114,7 @@ public class Libreoffice {
 
         draw.export("file://" + args[5], "png");
 
-        draw.close();
-        System.exit(0);
+//        draw.close();
+//        System.exit(0);
     }
 }

@@ -1,5 +1,14 @@
 plugins {
-    id 'java'
+    id 'application'
+}
+apply plugin : "java"
+
+ext {
+    javaMainClass = "novemberizing.Libreoffice"
+}
+
+application {
+    mainClassName = javaMainClass
 }
 
 group 'novemberizing'
@@ -13,11 +22,11 @@ dependencies {
     runtime files('/usr/lib/libreoffice/program')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    compile 'org.libreoffice:jurt:6.4.3'
-    compile 'org.libreoffice:ridl:6.4.3'
-    compile 'org.libreoffice:juh:6.4.3'
-    compile 'org.libreoffice:unoil:6.4.3'
-    compile 'org.libreoffice:officebean:6.4.3'
+    implementation 'org.libreoffice:jurt:6.4.3'
+    implementation 'org.libreoffice:ridl:6.4.3'
+    implementation 'org.libreoffice:juh:6.4.3'
+    implementation 'org.libreoffice:unoil:6.4.3'
+    implementation 'org.libreoffice:officebean:6.4.3'
 
     implementation 'com.google.code.gson:gson:2.8.6'
 }
