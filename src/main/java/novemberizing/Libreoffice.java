@@ -62,27 +62,9 @@ public class Libreoffice {
     }
 
     public void save() {
-
     }
 
     public void export(String url, String type) {
-//        if(__component != null) {
-//            try {
-//                XStorable storable = UnoRuntime.queryInterface(XStorable.class, __component);
-//                PropertyValue[] values = new PropertyValue[2];
-//                // Setting the flag for overwriting
-//                values[0] = new PropertyValue();
-//                values[0].Name = "Overwrite";
-//                values[0].Value = Boolean.TRUE;
-//                // Setting the filter name
-//                values[1] = new PropertyValue();
-//                values[1].Name = "FilterName";
-//                values[1].Value = "draw_png_Export";
-//                storable.storeToURL(url, values);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     public void close() {
@@ -97,6 +79,15 @@ public class Libreoffice {
     }
 
     public static void main(String[] args) {
+        for(String v : args) {
+            System.out.println(v);
+        }
+
+        if(args.length < 5) {
+            System.out.println("program [boook] [category] [chapter] [person] [content]");
+            return;
+        }
+
         try {
             Libreoffice.init();
         } catch (BootstrapException e) {
@@ -113,7 +104,15 @@ public class Libreoffice {
         object.add("ParaAdjust", new JsonPrimitive("center"));
         object.add("TextVerticalAdjust", new JsonPrimitive("center"));
 
-        draw.add(0, 0, 0, 1200, 630, "學而時習之 不亦說乎\n有朋自遠方來 不亦樂乎\n人不知而不慍 不亦君子乎", object);
+        draw.add(0, 0, 0, 1200, 630, args[4], object);
+
+        object.add("CharFontName", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
+        object.add("CharFontNameAsian", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
+        object.add("CharHeight", new JsonPrimitive(14));
+        object.add("CharHeightAsian", new JsonPrimitive(14));
+        object.add("ParaAdjust", new JsonPrimitive("left"));
+        object.add("TextVerticalAdjust", new JsonPrimitive("top"));
+        draw.add(0, 0, -35, 1200, 100, args[0] + " / " + args[1] + " / " + args[2] + " " + args[3], object);
 
         draw.export("file:///home/novemberizing/test.png", "png");
 
