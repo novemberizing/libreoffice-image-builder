@@ -114,7 +114,7 @@ public class Libreoffice {
 
         draw.export("file://" + args[5], "png");
 
-//        draw.close();
-//        System.exit(0);
+        draw.close();
+        System.exit(0);
     }
 }
