@@ -83,8 +83,8 @@ public class Libreoffice {
             System.out.println(v);
         }
 
-        if(args.length < 5) {
-            System.out.println("program [boook] [category] [chapter] [person] [content]");
+        if(args.length < 6) {
+            System.out.println("program [boook] [category] [chapter] [person] [content] [path]");
             return;
         }
 
@@ -114,11 +114,9 @@ public class Libreoffice {
         object.add("TextVerticalAdjust", new JsonPrimitive("top"));
         draw.add(0, 0, -35, 1200, 100, args[0] + " / " + args[1] + " / " + args[2] + " " + args[3], object);
 
-        draw.export("file:///home/novemberizing/test.png", "png");
+        draw.export("file://" + args[5], "png");
 
-        System.out.println("Hello World");
-
-//        draw.close();
-//        System.exit(0);
+        draw.close();
+        System.exit(0);
     }
 }
