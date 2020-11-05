@@ -12,6 +12,7 @@ import com.sun.star.beans.XPropertySet;
 import com.sun.star.container.XIndexAccess;
 import com.sun.star.drawing.*;
 import com.sun.star.frame.XStorable;
+import com.sun.star.io.IOException;
 import com.sun.star.lang.IndexOutOfBoundsException;
 import com.sun.star.lang.WrappedTargetException;
 import com.sun.star.lang.XMultiServiceFactory;
@@ -114,6 +115,28 @@ public class LibreofficeDraw extends Libreoffice {
                     properties.setPropertyValue("Height", (int) (height * 26.458333333f));
                 }
             } catch (UnknownPropertyException | WrappedTargetException | PropertyVetoException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void export(String url, String type) {
+        if(__component != null) {
+            try {
+                XStorable storable = UnoRuntime.queryInterface(XStorable.class, __component);
+                PropertyValue[] values = new PropertyValue[2];
+                // Setting the flag for overwriting
+                values[0] = new PropertyValue();
+                values[0].Name = "Overwrite";
+                values[0].Value = Boolean.TRUE;
+                // Setting the filter name
+                values[1] = new PropertyValue();
+                values[1].Name = "FilterName";
+                switch(type) {
+                    case "png": values[1].Value = "draw_png_Export"; break;
+                }
+                storable.storeToURL(url, values);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

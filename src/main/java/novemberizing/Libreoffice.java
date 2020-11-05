@@ -8,6 +8,8 @@ import com.sun.star.comp.helper.Bootstrap;
 import com.sun.star.comp.helper.BootstrapException;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XDesktop;
+import com.sun.star.frame.XStorable;
+import com.sun.star.io.IOException;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.uno.Exception;
@@ -60,6 +62,30 @@ public class Libreoffice {
         }
     }
 
+    public void save() {
+
+    }
+
+    public void export(String url, String type) {
+//        if(__component != null) {
+//            try {
+//                XStorable storable = UnoRuntime.queryInterface(XStorable.class, __component);
+//                PropertyValue[] values = new PropertyValue[2];
+//                // Setting the flag for overwriting
+//                values[0] = new PropertyValue();
+//                values[0].Name = "Overwrite";
+//                values[0].Value = Boolean.TRUE;
+//                // Setting the filter name
+//                values[1] = new PropertyValue();
+//                values[1].Name = "FilterName";
+//                values[1].Value = "draw_png_Export";
+//                storable.storeToURL(url, values);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+    }
+
     public void close() {
         if(__component != null) {
             __component.dispose();
@@ -92,10 +118,9 @@ public class Libreoffice {
 //        properties.setPropertyValue("CharHeightAsian", 70);
 //        properties.setPropertyValue("CharHeight", 70);
 //        properties.setPropertyValue("ParaAdjust", ParagraphAdjust.CENTER);
-
-
-
         draw.add(0, 0, 0, 1200, 630, "學而時習之 不亦說乎\n有朋自遠方來 不亦樂乎\n人不知而不慍 不亦君子乎", object);
+
+        draw.export("file:///home/novemberizing/test.png", "png");
 
         System.out.println("Hello World");
 
