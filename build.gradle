@@ -18,4 +18,6 @@ dependencies {
     compile 'org.libreoffice:juh:6.4.3'
     compile 'org.libreoffice:unoil:6.4.3'
     compile 'org.libreoffice:officebean:6.4.3'
+
+    implementation 'com.google.code.gson:gson:2.8.6'
 }

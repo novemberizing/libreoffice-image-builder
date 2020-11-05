@@ -1,5 +1,8 @@
 package novemberizing;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import com.sun.star.awt.Point;
 import com.sun.star.awt.Size;
 import com.sun.star.beans.PropertyValue;
@@ -19,6 +22,8 @@ import com.sun.star.text.XTextRange;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.view.PaperFormat;
 import com.sun.star.view.XPrintable;
+
+import java.util.Map;
 
 
 public class LibreofficeDraw extends Libreoffice {
@@ -48,7 +53,8 @@ public class LibreofficeDraw extends Libreoffice {
         return page;
     }
 
-    public void add(int index, int x, int y, int width, int height, String v) {
+    public void add(int index, int x, int y, int width, int height, String v, JsonObject object) {
+
         if(__component != null) {
             try {
                 XDrawPage page = this.page(index);
@@ -77,12 +83,12 @@ public class LibreofficeDraw extends Libreoffice {
                 cursor.gotoEnd(true);
                 XPropertySet properties = UnoRuntime.queryInterface(XPropertySet.class, range);
 
-                System.out.println("Option How To");
-                properties.setPropertyValue("CharFontName", "Noto Serif CJK JP ExtraLight");
-                properties.setPropertyValue("CharFontNameAsian", "Noto Serif CJK JP ExtraLight");
-                properties.setPropertyValue("CharHeightAsian", 70);
-                properties.setPropertyValue("CharHeight", 70);
-                properties.setPropertyValue("ParaAdjust", ParagraphAdjust.CENTER);
+                for(Map.Entry<String, JsonElement> entry : object.entrySet()) {
+                    Object value = Libreoffice.value(entry.getKey(), Primitive.object.from(entry.getValue()));
+                    properties.setPropertyValue(entry.getKey(), value);
+
+                }
+
             } catch(Exception e) {
                 e.printStackTrace();
             }
@@ -94,7 +100,6 @@ public class LibreofficeDraw extends Libreoffice {
             XPrintable printable = UnoRuntime.queryInterface(XPrintable.class, __component);
             PropertyValue[] values = printable.getPrinter();
             for (PropertyValue value : values) {
-                System.out.println(value.Name);
                 if (value.Name.equals("PaperFormat")) {
                     value.Value = PaperFormat.USER;
                     break;
