@@ -8,8 +8,6 @@ import com.sun.star.comp.helper.Bootstrap;
 import com.sun.star.comp.helper.BootstrapException;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XDesktop;
-import com.sun.star.frame.XStorable;
-import com.sun.star.io.IOException;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.uno.Exception;
@@ -25,6 +23,7 @@ public class Libreoffice {
             case "CharHeightAsian": return Primitive.integer.from((Number) value);
             case "CharHeight": return Primitive.integer.from((Number) value);
             case "ParaAdjust": return LibreofficeStyle.ParagraphAdjust.from((String) value);
+            case "TextVerticalAdjust": return LibreofficeStyle.TextVerticalAdjust.from((String) value);
         }
         throw new RuntimeException();
     }
@@ -112,12 +111,8 @@ public class Libreoffice {
         object.add("CharHeight", new JsonPrimitive(70));
         object.add("CharHeightAsian", new JsonPrimitive(70));
         object.add("ParaAdjust", new JsonPrimitive("center"));
-//        properties.setPropertyValue("CharFontName", "Noto Serif CJK JP ExtraLight");
-//        properties.setPropertyValue("CharFontName", "Noto Serif CJK JP ExtraLight");
-//        properties.setPropertyValue("CharFontNameAsian", "Noto Serif CJK JP ExtraLight");
-//        properties.setPropertyValue("CharHeightAsian", 70);
-//        properties.setPropertyValue("CharHeight", 70);
-//        properties.setPropertyValue("ParaAdjust", ParagraphAdjust.CENTER);
+        object.add("TextVerticalAdjust", new JsonPrimitive("center"));
+
         draw.add(0, 0, 0, 1200, 630, "學而時習之 不亦說乎\n有朋自遠方來 不亦樂乎\n人不知而不慍 不亦君子乎", object);
 
         draw.export("file:///home/novemberizing/test.png", "png");

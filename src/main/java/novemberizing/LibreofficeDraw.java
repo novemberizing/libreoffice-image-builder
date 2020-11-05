@@ -5,10 +5,7 @@ import com.google.gson.JsonObject;
 
 import com.sun.star.awt.Point;
 import com.sun.star.awt.Size;
-import com.sun.star.beans.PropertyValue;
-import com.sun.star.beans.PropertyVetoException;
-import com.sun.star.beans.UnknownPropertyException;
-import com.sun.star.beans.XPropertySet;
+import com.sun.star.beans.*;
 import com.sun.star.container.XIndexAccess;
 import com.sun.star.drawing.*;
 import com.sun.star.frame.XStorable;
@@ -62,6 +59,7 @@ public class LibreofficeDraw extends Libreoffice {
                 XMultiServiceFactory factory = UnoRuntime.queryInterface(XMultiServiceFactory.class, __component);
                 XShapes xShapes = UnoRuntime.queryInterface(XShapes.class, page);
                 Object instance = factory.createInstance("com.sun.star.drawing.TextShape");
+
                 XShape shape = UnoRuntime.queryInterface(XShape.class, instance);
                 xShapes.add(shape);
 
@@ -82,12 +80,11 @@ public class LibreofficeDraw extends Libreoffice {
                 XTextRange range = UnoRuntime.queryInterface(XTextRange.class, cursor);
                 range.setString(v);
                 cursor.gotoEnd(true);
-                XPropertySet properties = UnoRuntime.queryInterface(XPropertySet.class, range);
+                XPropertySet properties = UnoRuntime.queryInterface(XPropertySet.class, instance);
 
                 for(Map.Entry<String, JsonElement> entry : object.entrySet()) {
                     Object value = Libreoffice.value(entry.getKey(), Primitive.object.from(entry.getValue()));
                     properties.setPropertyValue(entry.getKey(), value);
-
                 }
 
             } catch(Exception e) {
