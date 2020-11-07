@@ -1,6 +1,7 @@
 package novemberizing;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.sun.star.beans.PropertyValue;
 
@@ -13,6 +14,12 @@ import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.uno.Exception;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 public class Libreoffice {
 
@@ -78,9 +85,78 @@ public class Libreoffice {
         }
     }
 
+    public static void gen(String book, String category, String section, String prefix, String content, String destination) {
+
+        LibreofficeDraw draw = new LibreofficeDraw(1200, 630);
+
+        JsonObject object = new JsonObject();
+        object.add("CharFontName", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
+        object.add("CharFontNameAsian", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
+        object.add("CharHeight", new JsonPrimitive(60));
+        object.add("CharHeightAsian", new JsonPrimitive(60));
+        object.add("ParaAdjust", new JsonPrimitive("center"));
+        object.add("TextVerticalAdjust", new JsonPrimitive("center"));
+
+        content = content.replaceAll("\\\\n", "\n");
+
+        draw.add(0, 0, 0, 1200, 630, content, object);
+
+        object.add("CharFontName", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
+        object.add("CharFontNameAsian", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
+        object.add("CharHeight", new JsonPrimitive(14));
+        object.add("CharHeightAsian", new JsonPrimitive(14));
+        object.add("ParaAdjust", new JsonPrimitive("left"));
+        object.add("TextVerticalAdjust", new JsonPrimitive("top"));
+        draw.add(0, 0, -35, 1200, 100, book + " / " + category + " / " + section + " " + prefix, object);
+
+        draw.export("file://" + destination, "png");
+    }
+
+    public static String extension(File file) {
+        String name = file.getName();
+        int index = name.lastIndexOf(".");
+        if(index >= 0) {
+            return name.substring(index + 1);
+        }
+        return null;
+    }
+
+    private static final String json = "json";
+
+    public static void scan(File file, String exclude, String output) {
+        if(file != null) {
+            if(file.isFile()) {
+                if(json.equals(Libreoffice.extension(file))) {
+                    try {
+                        String txt = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+                        JsonObject source = JsonParser.parseString(txt).getAsJsonObject();
+                        String section = source.get("section").getAsString();
+                        String content = source.get("content").getAsString();
+                        String book = source.get("book").getAsString();
+                        String category = source.get("category").getAsString();
+                        String prefix = source.get("prefix").getAsString();
+                        String destination = output + "/" + book + "/" + category + "/" + section + ".png";
+                        Libreoffice.gen(book, category, section, prefix, content, destination);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if(file.isDirectory()) {
+                File[] files = file.listFiles();
+                if(files != null) {
+                    for(File item: files) {
+                        if(!exclude.equals(item.getName())) {
+                            Libreoffice.scan(item, exclude, output);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        if(args.length < 6) {
-            System.out.println("program [book] [category] [chapter] [person] [content] [path]");
+        if(args.length < 2) {
+            System.out.println("program [source] [destination]");
             return;
         }
 
@@ -90,31 +166,11 @@ public class Libreoffice {
             e.printStackTrace();
         }
 
-        LibreofficeDraw draw = new LibreofficeDraw(1200, 630);
+        String source = args[0];
+        String destination = args[1];
 
-        JsonObject object = new JsonObject();
-        object.add("CharFontName", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
-        object.add("CharFontNameAsian", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
-        object.add("CharHeight", new JsonPrimitive(70));
-        object.add("CharHeightAsian", new JsonPrimitive(70));
-        object.add("ParaAdjust", new JsonPrimitive("center"));
-        object.add("TextVerticalAdjust", new JsonPrimitive("center"));
+        Libreoffice.scan(new File(source), "fontawesome-free-5.15.1-web", destination);
 
-        args[4] = args[4].replaceAll("\\\\n", "\n");
-
-        draw.add(0, 0, 0, 1200, 630, args[4], object);
-
-        object.add("CharFontName", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
-        object.add("CharFontNameAsian", new JsonPrimitive("Noto Serif CJK JP ExtraLight"));
-        object.add("CharHeight", new JsonPrimitive(14));
-        object.add("CharHeightAsian", new JsonPrimitive(14));
-        object.add("ParaAdjust", new JsonPrimitive("left"));
-        object.add("TextVerticalAdjust", new JsonPrimitive("top"));
-        draw.add(0, 0, -35, 1200, 100, args[0] + " / " + args[1] + " / " + args[2] + " " + args[3], object);
-
-        draw.export("file://" + args[5], "png");
-
-        draw.close();
         System.exit(0);
     }
 }
