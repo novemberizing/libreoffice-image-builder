@@ -13,8 +13,8 @@ gradle
 ## DOCKER
 
 ```
-docker build -t novemberizing/orientalism .
-docker push novemberizing/orientalism
+docker build -t novemberizing/orientalism-java .
+docker push novemberizing/orientalism-java
 ```
 
 ## USAGE
