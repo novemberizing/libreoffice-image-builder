@@ -20,7 +20,7 @@ docker push novemberizing/orientalism
 ## USAGE
 
 ```
-
+./gradlew run --args='"[source]" "[destination]"'
 ```
 
 https://www.baeldung.com/gradle-run-java-main
