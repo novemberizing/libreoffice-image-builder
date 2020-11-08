@@ -121,12 +121,22 @@ public class Libreoffice {
         return null;
     }
 
+    public static String name(File file) {
+        String name = file.getName();
+        int index = name.lastIndexOf(".");
+        if(index > 0) {
+            return name.substring(0, index);
+        }
+        return null;
+    }
+
     private static final String json = "json";
+    private static final String index = "index";
 
     public static void scan(File file, String exclude, String output) {
         if(file != null) {
             if(file.isFile()) {
-                if(json.equals(Libreoffice.extension(file))) {
+                if(json.equals(Libreoffice.extension(file)) && !index.equals(Libreoffice.name(file))) {
                     try {
                         String txt = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
                         JsonObject source = JsonParser.parseString(txt).getAsJsonObject();
